@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed, jumpForce;
-    public LayerMask ground;
-    public Collider2D usualCollider, crouchCollider;
     public Transform footPoint;
+    public Collider2D usualCollider, crouchCollider;
+    public LayerMask ground;
     public int finalJumpCount;
+    public float speed, jumpForce;
 
     private Rigidbody2D body;
     private Animator animator;
     private int jumpCount;
     private int runningID, isRunId, jumpId, jumpingID, isIdleID;
-    private bool isHurt = false, jumpPressed = false;
+    private bool jumpPressed = false;
     void Awake() {
         body = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -64,5 +64,14 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat(jumpingID, ySpeed);
         animator.SetBool(isIdleID, Physics2D.OverlapCircle(footPoint.position, 0.1f, ground));
         //Debug.Log(flMove);
+    }
+    public void JumpAudio() {
+        AudioManager.PlayJumpClip();
+    }
+    public void LandingAudio() {
+        AudioManager.PlayLandingClip();
+    }
+    public void FootStepAudio() {
+        AudioManager.PlayFootStepClip();
     }
 }
