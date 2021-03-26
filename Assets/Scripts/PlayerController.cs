@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
 
     private int combo = 0;
     private float timeCount, interval = 2f;
-    private bool isAttack = false;
+    private bool isAttack = false, uponGround, uponEnemy;
     private string attackName;
     void Awake() {
         body = GetComponent<Rigidbody2D>();
@@ -41,6 +41,8 @@ public class PlayerController : MonoBehaviour
         isAttackID = Animator.StringToHash("isAttack");
     }
     void Update() {
+        uponGround = Physics2D.OverlapCircle(footPoint.position, 0.1f, groundLayer);
+        uponEnemy = Physics2D.OverlapCircle(footPoint.position, 0.1f, enemyLayer);
         if (Input.GetButtonDown("Jump") && jumpCount > 0) {
             jumpPressed = true;
         }
@@ -74,7 +76,7 @@ public class PlayerController : MonoBehaviour
         if (move != 0) {
             transform.localScale = new Vector3(move, 1, 1);//转身
         }
-        if (body.velocity.y <= 0 && (Physics2D.OverlapCircle(footPoint.position, 0.1f, groundLayer) || Physics2D.OverlapCircle(footPoint.position, 0.1f, enemyLayer))) {
+        if (body.velocity.y <= 0 && (uponGround || uponEnemy)) {
             jumpCount = finalJumpCount;//落地和踩敌人时重置跳跃相关的参数，而且要避免刚起跳时OverlapCircle检测到地面
         }
         if (jumpPressed && jumpCount > 0) {//跳跃
@@ -96,42 +98,61 @@ public class PlayerController : MonoBehaviour
         }
         animator.SetFloat(runningID, Mathf.Abs(flMove));
         animator.SetFloat(jumpingID, ySpeed);
-        animator.SetBool(isIdleID, Physics2D.OverlapCircle(footPoint.position, 0.1f, groundLayer));
-        if(Physics2D.OverlapCircle(footPoint.position, 0.1f, enemyLayer)) {
-            animator.SetBool(isIdleID, true);
-        }
+        animator.SetBool(isIdleID, uponGround || uponEnemy);
     }
     Coroutine tmpCoroutine = null;
     private void Attack() {
-        if (Input.GetMouseButton(0) && !animator.GetBool(isAttackID)) {//左键轻攻击
-            if (tmpCoroutine != null) {
-                StopCoroutine(tmpCoroutine);
+        if (!animator.GetBool(isAttackID)) {
+            if(uponGround) {
+                if (Input.GetMouseButton(0)) {//左键轻攻击
+                    if (tmpCoroutine != null) {
+                        StopCoroutine(tmpCoroutine);
+                    }
+                    tmpCoroutine = StartCoroutine(setIsAttackFalse(4f / 14f));
+                    //启动协程倒计时使isAttack为false，关闭协程确保这段时间内isAttack不会被设为false
+                    body.velocity = Vector2.zero;
+                    animator.SetBool(isAttackID, true);
+                    isAttack = true;
+                    combo++;
+                    if (combo > finalMaxCombo) {//combo为1时进行一段攻击，为2时进行二段攻击
+                        combo = 1;
+                    }
+                    timeCount = interval;
+                    animator.SetTrigger(lightAttackID);
+                    animator.SetInteger(comboID, combo);
+                    body.MovePosition(frontPoint.position);
+                    attackName = "Light";
+                }
+                if (Input.GetMouseButton(1)) {//右键重攻击
+                    if (tmpCoroutine != null) {
+                        StopCoroutine(tmpCoroutine);
+                    }
+                    tmpCoroutine = StartCoroutine(setIsAttackFalse(3f / 14f));
+                    body.velocity = Vector2.zero;
+                    animator.SetBool(isAttackID, true);
+                    isAttack = true;
+                    animator.SetTrigger(haveyAttackID);
+                    attackName = "Heavy";
+                }
             }
-            tmpCoroutine = StartCoroutine(setIsAttackFalse());
-            //启动协程倒计时使isAttack为false，关闭协程确保这段时间内isAttack不会被设为false
-            body.velocity = Vector2.zero;
-            animator.SetBool(isAttackID, true);
-            isAttack = true;
-            combo++;
-            if (combo > finalMaxCombo) {//combo为1时进行一段攻击，为2时进行二段攻击
-                combo = 1;
+            else {//空中攻击
+                if (Input.GetMouseButton(0)) {
+                    animator.SetBool(isAttackID, true);
+                    animator.SetTrigger(lightAttackID);
+                    attackName = "Light";
+                }
+                if (Input.GetMouseButton(1)) {
+                    if (tmpCoroutine != null) {
+                        StopCoroutine(tmpCoroutine);
+                    }
+                    tmpCoroutine = StartCoroutine(setIsAttackFalse(11f / 14f));
+                    body.velocity = Vector2.zero;
+                    animator.SetBool(isAttackID, true);
+                    isAttack = true;
+                    animator.SetTrigger(haveyAttackID);
+                    attackName = "";
+                }
             }
-            timeCount = interval;
-            animator.SetTrigger(lightAttackID);
-            animator.SetInteger(comboID, combo);
-            body.MovePosition(frontPoint.position);
-            attackName = "Light";
-        }
-        if (Input.GetMouseButton(1) && !animator.GetBool(isAttackID)) {//右键重攻击
-            if (tmpCoroutine != null) {
-                StopCoroutine(tmpCoroutine);
-            }
-            tmpCoroutine = StartCoroutine(setIsAttackFalse());
-            body.velocity = Vector2.zero;
-            animator.SetBool(isAttackID, true);
-            isAttack = true;
-            animator.SetTrigger(haveyAttackID);
-            attackName = "Heavy";
         }
         if (timeCount != 0) {
             timeCount -= Time.deltaTime;
@@ -141,8 +162,8 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    IEnumerator setIsAttackFalse() {
-        yield return new WaitForSeconds(0.2857f);//4/14s，即一次攻击动画所用时间
+    IEnumerator setIsAttackFalse(float time) {
+        yield return new WaitForSeconds(time);
         isAttack = false;
     }
     public void AttackOver() {//在每个攻击动画快结束时调用
@@ -163,5 +184,8 @@ public class PlayerController : MonoBehaviour
     }
     public void SwordSwooshAudio() {
         AudioManager.PlaySwordSwooshClip();
+    }
+    public void AirSlamLandingClipAudio() {
+        AudioManager.PlayAirSlamLandingClip();
     }
 }

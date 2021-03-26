@@ -12,12 +12,14 @@ public class AudioManager : MonoBehaviour
     [Header("¹¥»÷ÒôÐ§")]
     public AudioClip sheathSwordClip;
     public AudioClip swordSwooshClip;
+    public AudioClip airSlamLandingClip;
 
     private AudioSource jumpSource;
     private AudioSource landingSource;
     private AudioSource footStepSource;
     private AudioSource sheathSwordSource;
     private AudioSource swordSwooshSource;
+    private AudioSource airSlamLandingSource;
 
     private void Awake() {
         instance = this;
@@ -27,6 +29,7 @@ public class AudioManager : MonoBehaviour
         footStepSource = gameObject.AddComponent<AudioSource>();
         sheathSwordSource = gameObject.AddComponent<AudioSource>();
         swordSwooshSource = gameObject.AddComponent<AudioSource>();
+        airSlamLandingSource = gameObject.AddComponent<AudioSource>();
     }
     public static void PlayJumpClip() {
         instance.jumpSource.clip = instance.jumpClip;
@@ -47,5 +50,9 @@ public class AudioManager : MonoBehaviour
     public static void PlaySwordSwooshClip() {
         instance.swordSwooshSource.clip = instance.swordSwooshClip;
         instance.swordSwooshSource.Play();
+    }
+    public static void PlayAirSlamLandingClip() {
+        instance.airSlamLandingSource.clip = instance.airSlamLandingClip;
+        instance.airSlamLandingSource.Play();
     }
 }
