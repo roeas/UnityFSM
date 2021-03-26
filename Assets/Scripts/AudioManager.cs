@@ -5,14 +5,19 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager instance;
-
+    [Header("基本音效")]
     public AudioClip jumpClip;
     public AudioClip landingClip;
     public AudioClip[] footStepClips;
+    [Header("攻击音效")]
+    public AudioClip sheathSwordClip;
+    public AudioClip swordSwooshClip;
 
     private AudioSource jumpSource;
     private AudioSource landingSource;
     private AudioSource footStepSource;
+    private AudioSource sheathSwordSource;
+    private AudioSource swordSwooshSource;
 
     private void Awake() {
         instance = this;
@@ -20,6 +25,8 @@ public class AudioManager : MonoBehaviour
         jumpSource = gameObject.AddComponent<AudioSource>();
         landingSource = gameObject.AddComponent<AudioSource>();
         footStepSource = gameObject.AddComponent<AudioSource>();
+        sheathSwordSource = gameObject.AddComponent<AudioSource>();
+        swordSwooshSource = gameObject.AddComponent<AudioSource>();
     }
     public static void PlayJumpClip() {
         instance.jumpSource.clip = instance.jumpClip;
@@ -32,5 +39,13 @@ public class AudioManager : MonoBehaviour
     public static void PlayFootStepClip() {
         instance.footStepSource.clip = instance.footStepClips[Random.Range(0, instance.footStepClips.Length)];
         instance.footStepSource.Play();
+    }
+    public static void PlaySheathSwordClip() {
+        instance.sheathSwordSource.clip = instance.sheathSwordClip;
+        instance.sheathSwordSource.Play();
+    }
+    public static void PlaySwordSwooshClip() {
+        instance.swordSwooshSource.clip = instance.swordSwooshClip;
+        instance.swordSwooshSource.Play();
     }
 }
