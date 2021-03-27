@@ -13,7 +13,6 @@ public class PlayerController : MonoBehaviour
     [Header("打击感")]
     public int lightPauseFrame;
     public int heavyPauseFrame;
-    //public float shakeDuration, lightShakeStrength, heavyShakeStrength;
 
     private Rigidbody2D body;
     private Animator animator;
@@ -24,7 +23,8 @@ public class PlayerController : MonoBehaviour
 
     private int combo = 0;
     private float timeCount, interval = 2f;
-    private bool isAttack = false, uponGround, uponEnemy;
+    private bool uponGround, isAttack = false, isSlamAttack = false, canPlayJumpEffect = true;
+    //isAttack用于限制普通攻击时的移动输入，isSlamAttack用于限制下落攻击后摇时的跳跃，canPlayJumpEffect用于防止跳跃动画物件在初始化之前被调用
     private string attackName;
     void Awake() {
         body = GetComponent<Rigidbody2D>();
@@ -42,8 +42,7 @@ public class PlayerController : MonoBehaviour
     }
     void Update() {
         uponGround = Physics2D.OverlapCircle(footPoint.position, 0.1f, groundLayer);
-        uponEnemy = Physics2D.OverlapCircle(footPoint.position, 0.1f, enemyLayer);
-        if (Input.GetButtonDown("Jump") && jumpCount > 0) {
+        if (Input.GetButtonDown("Jump") && jumpCount > 0 && !isSlamAttack) {
             jumpPressed = true;
         }
         Animation();
@@ -76,10 +75,10 @@ public class PlayerController : MonoBehaviour
         if (move != 0) {
             transform.localScale = new Vector3(move, 1, 1);//转身
         }
-        if (body.velocity.y <= 0 && (uponGround || uponEnemy)) {
-            jumpCount = finalJumpCount;//落地和踩敌人时重置跳跃相关的参数，而且要避免刚起跳时OverlapCircle检测到地面
+        if (body.velocity.y <= 0 && (uponGround)) {
+            jumpCount = finalJumpCount;//落地时重置跳跃相关的参数，而且要避免刚起跳时OverlapCircle检测到地面
         }
-        if (jumpPressed && jumpCount > 0) {//跳跃
+        if (jumpPressed && jumpCount > 0 && !isSlamAttack) {//非落地攻击后摇内的跳跃
             jumpPressed = false;
             isAttack = false;
             body.velocity = new Vector2(body.velocity.x, jumpForce);
@@ -98,9 +97,9 @@ public class PlayerController : MonoBehaviour
         }
         animator.SetFloat(runningID, Mathf.Abs(flMove));
         animator.SetFloat(jumpingID, ySpeed);
-        animator.SetBool(isIdleID, uponGround || uponEnemy);
+        animator.SetBool(isIdleID, uponGround);
     }
-    Coroutine tmpCoroutine = null;
+    private Coroutine tmpCoroutine = null;
     private void Attack() {
         if (!animator.GetBool(isAttackID)) {
             if(uponGround) {
@@ -127,7 +126,7 @@ public class PlayerController : MonoBehaviour
                     if (tmpCoroutine != null) {
                         StopCoroutine(tmpCoroutine);
                     }
-                    tmpCoroutine = StartCoroutine(setIsAttackFalse(3f / 14f));
+                    tmpCoroutine = StartCoroutine(setIsAttackFalse(6f / 14f));
                     body.velocity = Vector2.zero;
                     animator.SetBool(isAttackID, true);
                     isAttack = true;
@@ -135,20 +134,21 @@ public class PlayerController : MonoBehaviour
                     attackName = "Heavy";
                 }
             }
-            else {//空中攻击
-                if (Input.GetMouseButton(0)) {
+            else {
+                if (Input.GetMouseButton(0)) {//空中攻击
                     animator.SetBool(isAttackID, true);
                     animator.SetTrigger(lightAttackID);
                     attackName = "Light";
                 }
-                if (Input.GetMouseButton(1)) {
+                if (Input.GetMouseButton(1)) {//下落攻击
                     if (tmpCoroutine != null) {
                         StopCoroutine(tmpCoroutine);
                     }
-                    tmpCoroutine = StartCoroutine(setIsAttackFalse(11f / 14f));
+                    tmpCoroutine = StartCoroutine(setIsAttackFalse(9f / 14f));
                     body.velocity = Vector2.zero;
                     animator.SetBool(isAttackID, true);
                     isAttack = true;
+                    isSlamAttack = true;
                     animator.SetTrigger(haveyAttackID);
                     attackName = "";
                 }
@@ -165,16 +165,28 @@ public class PlayerController : MonoBehaviour
     IEnumerator setIsAttackFalse(float time) {
         yield return new WaitForSeconds(time);
         isAttack = false;
+        isSlamAttack = false;
     }
     public void AttackOver() {//在每个攻击动画快结束时调用
         animator.SetBool(isAttackID, false);
     }
 
-    public void JumpAudio() {
+    public void OnJump() {
         AudioManager.PlayJumpClip();
+        if (canPlayJumpEffect) {
+            canPlayJumpEffect = false;
+            GameObject effect = transform.Find("Effects").Find("JumpDust").gameObject;
+            StartCoroutine(PlayEffect(effect, 3f / 14f));
+        }
     }
-    public void LandingAudio() {
+    public void OnLanding() {
         AudioManager.PlayLandingClip();
+        GameObject effect = transform.Find("Effects").Find("LandingDust").gameObject;
+        StartCoroutine(PlayEffect(effect, 2f / 14f));
+    }
+    public void OnRunSop() {
+        GameObject effect = transform.Find("Effects").Find("RunStopDust").gameObject;
+        StartCoroutine(PlayEffect(effect, 3f / 14f));
     }
     public void FootStepAudio() {
         AudioManager.PlayFootStepClip();
@@ -185,7 +197,21 @@ public class PlayerController : MonoBehaviour
     public void SwordSwooshAudio() {
         AudioManager.PlaySwordSwooshClip();
     }
-    public void AirSlamLandingClipAudio() {
+    public void OnAirSlamLanding() {
         AudioManager.PlayAirSlamLandingClip();
+        GameObject effect = transform.Find("Effects").Find("AirSlamDust").gameObject;
+        StartCoroutine(PlayEffect(effect, 5f / 14f));
+    }
+    public void DrawSwordAudio() {
+        AudioManager.PlayDrawSwordClip();
+    }
+    private IEnumerator PlayEffect(GameObject effectIn, float time) {//在对应需要特效的动画中被调用
+        effectIn.SetActive(true);
+        effectIn.transform.SetParent(null);
+        yield return new WaitForSecondsRealtime(time);//传入一个x/14，x即该动画所需帧数
+        effectIn.transform.SetParent(effectIn.GetComponent<Effect>().originalParent);//初始化参数在Effect脚本中的OnEnable中被赋值
+        effectIn.transform.localPosition = effectIn.GetComponent<Effect>().originalPosition;
+        effectIn.SetActive(false);
+        canPlayJumpEffect = true;
     }
 }
