@@ -9,7 +9,12 @@ public class Effect : MonoBehaviour
     [HideInInspector]
     public Vector2 originalPosition;
     private void OnEnable() {
-        originalParent = transform.parent;
         originalPosition = transform.localPosition;
+        originalParent = transform.parent;
+    }
+    public void EffectOver() {
+        transform.parent = originalParent;
+        transform.localPosition = originalPosition;
+        gameObject.SetActive(false);
     }
 }
