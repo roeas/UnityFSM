@@ -9,6 +9,7 @@ public class FSM : MonoBehaviour
 {
     public RogueSO rogue;
 
+    public GameObject player;
     private State currentState;
     private Dictionary<StateType, State> stateLise = new Dictionary<StateType, State>();
     void Awake() {
@@ -19,7 +20,9 @@ public class FSM : MonoBehaviour
         rogue.animator = GetComponent<Animator>();
     }
     void Update() {
+        FlipTo(player.transform);
         currentState.OnUpdate();
+        //Collider2D tmp=transform.Find("AttackArea").GetComponent<Collider2D>().Distance
     }
     public void ChangeState(StateType type) {
         if (currentState != null) {
@@ -36,6 +39,11 @@ public class FSM : MonoBehaviour
             else {
                 transform.localScale = new Vector3(-1, 1, 1);
             }
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.CompareTag("Player")) {
+
         }
     }
 }

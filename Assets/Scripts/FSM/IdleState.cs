@@ -7,12 +7,12 @@ public class IdleState : State {
 
     }
     public override void OnEnter() {
+        rogue.animator.Play("Rogue_Idle");
+    }
+    public override void OnUpdate() {
 
     }
     public override void OnExit() {
-
-    }
-    public override void OnUpdate() {
 
     }
 }
