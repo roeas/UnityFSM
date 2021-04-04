@@ -8,21 +8,25 @@ public enum StateType {
 public class FSM : MonoBehaviour
 {
     public RogueSO rogue;
-
     public GameObject player;
+    public Collider2D attackLenth;
+    public Animator animator;
+
     private State currentState;
     private Dictionary<StateType, State> stateLise = new Dictionary<StateType, State>();
     void Awake() {
         stateLise.Add(StateType.Idle, new IdleState(this));
-        stateLise.Add(StateType.Idle, new AttackState(this));
+        stateLise.Add(StateType.Attack, new AttackState(this));
 
         ChangeState(StateType.Idle);
-        rogue.animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
     }
     void Update() {
         FlipTo(player.transform);
         currentState.OnUpdate();
-        //Collider2D tmp=transform.Find("AttackArea").GetComponent<Collider2D>().Distance
+        if (attackLenth.bounds.Intersects(player.GetComponents<Collider2D>()[0].bounds) || attackLenth.bounds.Intersects(player.GetComponents<Collider2D>()[1].bounds)) {
+            ChangeState(StateType.Attack);
+        }
     }
     public void ChangeState(StateType type) {
         if (currentState != null) {
@@ -39,11 +43,6 @@ public class FSM : MonoBehaviour
             else {
                 transform.localScale = new Vector3(-1, 1, 1);
             }
-        }
-    }
-    private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.CompareTag("Player")) {
-
         }
     }
 }

@@ -34,6 +34,16 @@ public class PlayerEffectController : MonoBehaviour
     public void DashAudio() {
         AudioManager.PlayDashClip();
     }
+    public void OnHurt() {
+        AudioManager.PlayHurtClip();
+    }
+    public void OnParryStance() {
+        AudioManager.PlayDrawSwordClip();
+    }
+    public void OnParry() {
+        AudioManager.PlayParryClip();
+        PlayEffect("ParryEffect");
+    }
     private void PlayEffect(string effectName) {
         GameObject effect = transform.Find("Effects").Find(effectName).gameObject;
         effect.SetActive(true);

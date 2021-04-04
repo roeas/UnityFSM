@@ -16,4 +16,3 @@ MonoBehaviour:
   attack: 10
   moveSpeed: 5
   chaseSpeed: 8
-  animator: {fileID: 0}

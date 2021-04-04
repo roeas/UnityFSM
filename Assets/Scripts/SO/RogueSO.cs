@@ -9,5 +9,4 @@ public class RogueSO : ScriptableObject
     public float attack;
     public float moveSpeed;
     public float chaseSpeed;
-    public Animator animator;
 }

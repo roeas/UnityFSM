@@ -8,10 +8,10 @@ public class AttackState : State {
 
     }
     public override void OnEnter() {
-        rogue.animator.Play("Rogue_Attack");
+        fsm.animator.Play("Rogue_Attack");
     }
     public override void OnUpdate() {
-        animeInfo = rogue.animator.GetCurrentAnimatorStateInfo(0);
+        animeInfo = fsm.animator.GetCurrentAnimatorStateInfo(0);
         if (animeInfo.normalizedTime >= 0.99f) {
             fsm.ChangeState(StateType.Idle);
         }

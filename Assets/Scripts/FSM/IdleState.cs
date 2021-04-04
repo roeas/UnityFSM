@@ -7,7 +7,7 @@ public class IdleState : State {
 
     }
     public override void OnEnter() {
-        rogue.animator.Play("Rogue_Idle");
+        fsm.animator.Play("Rogue_Idle");
     }
     public override void OnUpdate() {
 
