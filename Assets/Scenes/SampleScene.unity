@@ -1461,7 +1461,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.71324056, y: -1.9934158, z: -10}
+  m_LocalPosition: {x: 0.7132444, y: -1.9934158, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2011347276}
@@ -6743,7 +6743,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1541620388}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.7132706, y: -2.54, z: -10}
+  m_LocalPosition: {x: 0.7132787, y: -2.54, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 416149418}
@@ -7190,7 +7190,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 9b0833c02b71a294faba6438278d937a, type: 3}
   dashClip: {fileID: 8300000, guid: cc0a09af0c0ff0e45843d8ebcf4bf2e0, type: 3}
   hurtClip: {fileID: 8300000, guid: 4acaf282c31675042873963419dc479d, type: 3}
-  parryClip: {fileID: 0}
+  parryClip: {fileID: 8300000, guid: 3a115dcb4dde9fb45a72f397319eec92, type: 3}
   sheathSwordClip: {fileID: 8300000, guid: 3e1c4661705bfe74fbfc9d0c9357d51d, type: 3}
   swordSwooshClip: {fileID: 8300000, guid: 952f4e06b9fc14a4abd72725f0c66eb2, type: 3}
   airSlamLandingClip: {fileID: 8300000, guid: c2b13e0fd18ea1c4880fbf37b7f10a70, type: 3}
@@ -7576,9 +7576,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rogue: {fileID: 11400000, guid: 77fab94cd21c05e44b7a3c99280b97de, type: 2}
-  player: {fileID: 981220572}
-  attackLenth: {fileID: 97439181}
+  playerColldiers: []
   animator: {fileID: 1905080640}
+  player: {fileID: 981220572}
+  rogueCollider: {fileID: 0}
+  playerLAArea: {fileID: 0}
+  playerHAArea: {fileID: 0}
+  attackLenth: {fileID: 0}
 --- !u!1 &1953395260
 GameObject:
   m_ObjectHideFlags: 0

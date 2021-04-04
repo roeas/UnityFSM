@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AttackState : State {
-    public AttackState(FSM fsmIn) : base(fsmIn) {
+public class ThrowState : State
+{
+    public ThrowState(FSM fsmIn) : base(fsmIn) {
 
     }
     public override void OnEnter() {
-        fsm.animator.Play("Rogue_Attack");
+        fsm.animator.Play("Rogue_Throw");
     }
     public override void OnUpdate() {
         animeInfo = fsm.animator.GetCurrentAnimatorStateInfo(0);

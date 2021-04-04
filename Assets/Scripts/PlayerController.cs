@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour {
             jumpPressed = true;
         }
         if (Input.GetKeyDown(KeyCode.LeftShift)) {
-            if (!isDash && canDash && !isSlam && !isHurt) {
+            if (!isDash && canDash && !isSlam && !isHurt && !isParry) {
                 isDash = true;
                 isParryStance = false;
                 animator.SetTrigger(dashID);
@@ -96,12 +96,6 @@ public class PlayerController : MonoBehaviour {
     }
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.CompareTag("Enemy")) {//与敌人交互、触发帧冻结
-            if (transform.localScale.x > 0) {
-                //collision.GetComponent<Enemy>().Hurt(Vector2.right);
-            }
-            else {
-                //collision.GetComponent<Enemy>().Hurt(Vector2.left);
-            }
             if (attackName == "Light") {
                 AttackSense.instance.FrameFreeze(lightPauseFrame);
             }
@@ -109,13 +103,14 @@ public class PlayerController : MonoBehaviour {
                 AttackSense.instance.FrameFreeze(heavyPauseFrame);
             }
         }
-        if (collision.CompareTag("AttackArea") && !isDash) {//受伤
-            if (isParryStance) {
+        if (collision.CompareTag("AttackArea") && !isDash) {//受击
+            if (isParryStance) {//防御
                 animator.SetTrigger(parryID);
                 isParry = true;
                 Invoke(nameof(ParryOver), 5f / 14f);
                 return;
             }
+            //受伤
             isHurt = true;
             animator.SetTrigger(HurtID);
         }
@@ -205,7 +200,7 @@ public class PlayerController : MonoBehaviour {
     }
     private Coroutine tmpCoroutine = null;//仅在Attack中使用
     private void Attack() {
-        if (!animator.GetBool(isAttackID) && !isHurt && !isDash) {
+        if (!animator.GetBool(isAttackID) && !isHurt && !isDash && !isParryStance) {
             if (uponGround) {
                 if (Input.GetMouseButton(0)) {//左键轻攻击
                     if (tmpCoroutine != null) {

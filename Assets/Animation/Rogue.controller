@@ -226,8 +226,7 @@ AnimatorStateMachine:
     m_State: {fileID: -3610708634554956656}
     m_Position: {x: 30, y: 50, z: 0}
   m_ChildStateMachines: []
-  m_AnyStateTransitions:
-  - {fileID: -3055905788700869901}
+  m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
@@ -352,8 +351,7 @@ AnimatorState:
   m_Name: Rogue_Hurt
   m_Speed: 1
   m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: -5999335744439790552}
+  m_Transitions: []
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
