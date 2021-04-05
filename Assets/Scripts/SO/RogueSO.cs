@@ -7,6 +7,5 @@ public class RogueSO : ScriptableObject
 {
     public float health;
     public float attack;
-    public float moveSpeed;
-    public float chaseSpeed;
+    public float Speed;
 }

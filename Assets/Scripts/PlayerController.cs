@@ -104,8 +104,8 @@ public class PlayerController : MonoBehaviour {
             }
         }
         if (collision.CompareTag("AttackArea") && !isDash) {//ÊÜ»÷
+            transform.localScale = collision.bounds.center.x >= usualCollider.bounds.center.x ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);//×ªÉí
             if (isParryStance) {//·ÀÓù
-                transform.localScale = collision.bounds.center.x >= usualCollider.bounds.center.x ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);
                 isParry = true;
                 animator.SetTrigger(parryID);
                 Invoke(nameof(ParryOver), 5f / 14f);

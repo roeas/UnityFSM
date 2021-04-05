@@ -14,5 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   attack: 10
-  moveSpeed: 5
-  chaseSpeed: 8
+  Speed: 400

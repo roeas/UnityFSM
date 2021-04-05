@@ -327,7 +327,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.21893355, y: 0.5962336}
+  m_Offset: {x: 0.23434722, y: 0.5962336}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -338,7 +338,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.3121457, y: 1.0624232}
+  m_Size: {x: 2.3436909, y: 1.0624232}
   m_EdgeRadius: 0
 --- !u!4 &97439182
 Transform:
@@ -1230,17 +1230,17 @@ MonoBehaviour:
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
-  m_XDamping: 1
-  m_YDamping: 1
+  m_XDamping: 0.3
+  m_YDamping: 0.3
   m_ZDamping: 1
   m_TargetMovementOnly: 1
-  m_ScreenX: 0.49858996
+  m_ScreenX: 0.5
   m_ScreenY: 0.5
   m_CameraDistance: 10
-  m_DeadZoneWidth: 0.7
-  m_DeadZoneHeight: 0.7
+  m_DeadZoneWidth: 0.8
+  m_DeadZoneHeight: 0.8
   m_DeadZoneDepth: 0
-  m_UnlimitedSoftZone: 0
+  m_UnlimitedSoftZone: 1
   m_SoftZoneWidth: 0.9
   m_SoftZoneHeight: 0.9
   m_BiasX: 0
@@ -1578,7 +1578,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.7132444, y: -1.9934158, z: -10}
+  m_LocalPosition: {x: 0.6899733, y: -1.9934173, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2011347276}
@@ -2648,7 +2648,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 981220572}
   m_Enabled: 0
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 188ea040a5165ac4a96f246c5cd74477, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -6955,7 +6955,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1541620388}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.7132787, y: -2.54, z: -10}
+  m_LocalPosition: {x: 0.6900005, y: -2.5400004, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 416149418}
@@ -7732,7 +7732,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 999999
+  m_Mass: 1.3012097
   m_LinearDrag: 0.1
   m_AngularDrag: 0.05
   m_GravityScale: 7
@@ -7750,7 +7750,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1905080639}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 188ea040a5165ac4a96f246c5cd74477, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -7860,6 +7860,7 @@ MonoBehaviour:
   attackLenth: {fileID: 0}
   throwLenth: {fileID: 0}
   shuriken: {fileID: 0}
+  body: {fileID: 0}
 --- !u!1 &1953395260
 GameObject:
   m_ObjectHideFlags: 0

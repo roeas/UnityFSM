@@ -26,7 +26,7 @@ public class Shuriken : MonoBehaviour
             spriteRenderer.color = new Color(1, 1, 1, 1);
             body.velocity = new Vector2(originalParent.parent.localScale.x * speed * Time.fixedDeltaTime, 0);
         }
-        if (Time.time - startTime >= 5f) {
+        if (Time.time - startTime >= 3f) {//三秒后回收
             transform.parent = originalParent;
             transform.localPosition = originalPosition;
             gameObject.SetActive(false);

@@ -7,6 +7,7 @@ public class AttackState : State {
 
     }
     public override void OnEnter() {
+        fsm.body.velocity = Vector2.zero;
         fsm.animator.Play("Rogue_Attack");
     }
     public override void OnUpdate() {
@@ -14,6 +15,9 @@ public class AttackState : State {
         if (animeInfo.normalizedTime >= 0.99f) {
             fsm.ChangeState(StateType.Idle);
         }
+    }
+    public override void OnFixedUpdate() {
+
     }
     public override void OnExit() {
 
