@@ -22,6 +22,6 @@ public class RunState : State
         fsm.body.velocity = new Vector2(fsm.rogue.Speed * fsm.transform.localScale.x * Time.fixedDeltaTime, fsm.body.velocity.y);
     }
     public override void OnExit() {
-
+        fsm.idleStartTime = Time.time;
     }
 }

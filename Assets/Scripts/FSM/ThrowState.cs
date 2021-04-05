@@ -21,6 +21,6 @@ public class ThrowState : State {
 
     }
     public override void OnExit() {
-
+        fsm.idleStartTime = Time.time;
     }
 }

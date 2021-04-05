@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum StateType {
-    Idle, Chase, Attack, Hurt, Throw, Run
+    Idle, Chase, Attack, Hurt, Throw, Run, SpecialAttack
 }
 public class FSM : MonoBehaviour
 {
@@ -18,6 +18,8 @@ public class FSM : MonoBehaviour
     [HideInInspector] public Collider2D throwLenth;
     [HideInInspector] public GameObject shuriken;
     [HideInInspector] public Rigidbody2D body;
+    [HideInInspector] public float idleStartTime;
+    [HideInInspector] public float idleWaitTime;
 
     private State currentState;
     private Dictionary<StateType, State> stateLise = new Dictionary<StateType, State>();
@@ -32,12 +34,14 @@ public class FSM : MonoBehaviour
         rogueCollider = GetComponent<Collider2D>();
         attackLenth = transform.Find("AttackLenth").GetComponent<Collider2D>();
         throwLenth = transform.Find("ThrowLenth").GetComponent<Collider2D>();
+        idleWaitTime = 0f;
 
         stateLise.Add(StateType.Idle, new IdleState(this));
         stateLise.Add(StateType.Attack, new AttackState(this));
         stateLise.Add(StateType.Hurt, new HurtState(this));
         stateLise.Add(StateType.Throw, new ThrowState(this));
         stateLise.Add(StateType.Run, new RunState(this));
+        stateLise.Add(StateType.SpecialAttack, new SpecialAttackState(this));
         ChangeState(StateType.Idle);
     }
     private void Update() {
@@ -58,5 +62,8 @@ public class FSM : MonoBehaviour
         if (target != null) {
             transform.localScale = target.position.x >= transform.position.x ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);
         }
+    }
+    public void OnSpecialAttack() {//在SpecialAttack动画中调用
+        transform.position = player.transform.position;
     }
 }

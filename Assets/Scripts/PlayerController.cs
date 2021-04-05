@@ -135,7 +135,7 @@ public class PlayerController : MonoBehaviour {
             transform.localScale = new Vector3(move, 1, 1);//转身
         }
         if (isParry) {//防御成功被击退时的移动
-            body.velocity = new Vector2(-transform.localScale.x * 5, body.velocity.y);
+            body.velocity = new Vector2(-transform.localScale.x * 8, body.velocity.y);
             return;
         }
         if (isHurt || isParryStance) {//受伤时与防御时，x轴不能移动且需要让玩家自然下落
