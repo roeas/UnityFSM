@@ -21,7 +21,9 @@ public class IdleState : State {
             if (fsm.attackLenth.bounds.Intersects(fsm.playerColldiers[0].bounds) || fsm.attackLenth.bounds.Intersects(fsm.playerColldiers[1].bounds)) {
                 fsm.ChangeState(StateType.Attack);
             }
-            
+            if(!fsm.throwLenth.bounds.Intersects(fsm.playerColldiers[0].bounds) && !fsm.throwLenth.bounds.Intersects(fsm.playerColldiers[1].bounds)) {
+                fsm.ChangeState(StateType.Throw);
+            }
         }
     }
     public override void OnExit() {

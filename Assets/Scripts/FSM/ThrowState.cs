@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ThrowState : State
-{
+public class ThrowState : State {
     public ThrowState(FSM fsmIn) : base(fsmIn) {
 
     }
     public override void OnEnter() {
         fsm.animator.Play("Rogue_Throw");
+        fsm.gameObject.transform.Find("Shurikens").Find("Shuriken").gameObject.SetActive(true);
     }
     public override void OnUpdate() {
         animeInfo = fsm.animator.GetCurrentAnimatorStateInfo(0);

@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class PlayerEffect : MonoBehaviour
 {
-    [HideInInspector]
-    public Transform originalParent;
-    [HideInInspector]
-    public Vector2 originalPosition;
+    private Transform originalParent;
+    private Vector2 originalPosition;
     private void OnEnable() {
         originalPosition = transform.localPosition;
         originalParent = transform.parent;

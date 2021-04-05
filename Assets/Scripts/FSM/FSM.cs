@@ -8,6 +8,7 @@ public enum StateType {
 public class FSM : MonoBehaviour
 {
     public RogueSO rogue;
+    public GameObject shurikenPrefab;
     [HideInInspector] public List<Collider2D> playerColldiers;
     [HideInInspector] public Animator animator;
     [HideInInspector] public GameObject player;
@@ -15,6 +16,8 @@ public class FSM : MonoBehaviour
     [HideInInspector] public Collider2D playerLAArea;
     [HideInInspector] public Collider2D playerHAArea;
     [HideInInspector] public Collider2D attackLenth;
+    [HideInInspector] public Collider2D throwLenth;
+    [HideInInspector] public GameObject shuriken;
 
     private State currentState;
     private Dictionary<StateType, State> stateLise = new Dictionary<StateType, State>();
@@ -34,6 +37,7 @@ public class FSM : MonoBehaviour
         animator = GetComponent<Animator>();
         rogueCollider = GetComponent<Collider2D>();
         attackLenth = transform.Find("AttackLenth").GetComponent<Collider2D>();
+        throwLenth = transform.Find("ThrowLenth").GetComponent<Collider2D>();
     }
     void Update() {
         FlipTo(player.transform);

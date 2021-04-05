@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour {
                 StartCoroutine(Dash(dashTime));
             }
         }
-        if (Input.GetKeyDown(KeyCode.E) && !isCrouch) {
+        if (Input.GetKeyDown(KeyCode.E) && !isCrouch && !isHurt) {
             isParryStance = true;
             animator.SetTrigger(parryStanceID);
         }
@@ -105,8 +105,9 @@ public class PlayerController : MonoBehaviour {
         }
         if (collision.CompareTag("AttackArea") && !isDash) {//ÊÜ»÷
             if (isParryStance) {//·ÀÓù
-                animator.SetTrigger(parryID);
+                transform.localScale = collision.bounds.center.x >= usualCollider.bounds.center.x ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);
                 isParry = true;
+                animator.SetTrigger(parryID);
                 Invoke(nameof(ParryOver), 5f / 14f);
                 return;
             }
