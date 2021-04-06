@@ -19,12 +19,12 @@ public class AfterimagePool : MonoBehaviour
             ReturnToPool(newImage);
         }
     }
-    public void ReturnToPool(GameObject objectIn) {
+    public void ReturnToPool(GameObject objectIn) {//在对象自身脚本中调用
         objectIn.SetActive(false);
         pool.Enqueue(objectIn);
     }
-    public GameObject TakeFromPool() {
-        if (pool.Count <= 0) {
+    public GameObject TakeFromPool() {//Player为冲刺状态时在FixedUpdate中反复调用
+        if (pool.Count <= 0) {//对象池不够用时多生成几个预制件
             FillPoll(5);
         }
         GameObject activeimage = pool.Dequeue();

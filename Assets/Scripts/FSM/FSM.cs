@@ -8,6 +8,7 @@ public enum StateType {
 public class FSM : MonoBehaviour
 {
     public RogueSO rogue;
+    //以下参数在每个Stste中调用
     [HideInInspector] public List<Collider2D> playerColldiers;
     [HideInInspector] public Animator animator;
     [HideInInspector] public GameObject player;
@@ -34,8 +35,8 @@ public class FSM : MonoBehaviour
         rogueCollider = GetComponent<Collider2D>();
         attackLenth = transform.Find("AttackLenth").GetComponent<Collider2D>();
         throwLenth = transform.Find("ThrowLenth").GetComponent<Collider2D>();
-        idleWaitTime = 0f;
-
+        idleWaitTime = 1f;
+        //注册状态并将FSM自身传入状态
         stateLise.Add(StateType.Idle, new IdleState(this));
         stateLise.Add(StateType.Attack, new AttackState(this));
         stateLise.Add(StateType.Hurt, new HurtState(this));
@@ -58,6 +59,7 @@ public class FSM : MonoBehaviour
         currentState = stateLise[type];
         currentState.OnEnter();
     }
+    //一些通用的方法
     public void FlipTo(Transform target) {
         if (target != null) {
             transform.localScale = target.position.x >= transform.position.x ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);

@@ -4,23 +4,26 @@ using UnityEngine;
 
 public class HurtState : State
 {
-    public HurtState(FSM fsmIn) : base(fsmIn) {
+    private FSM fsm;
+    private AnimatorStateInfo animeInfo;
 
+    public HurtState(FSM fsmIn) {
+        this.fsm = fsmIn;
     }
-    public override void OnEnter() {
+    public void OnEnter() {
         fsm.body.velocity = Vector2.zero;
         fsm.animator.Play("Rogue_Hurt");
     }
-    public override void OnUpdate() {
+    public void OnUpdate() {
         animeInfo = fsm.animator.GetCurrentAnimatorStateInfo(0);
         if (animeInfo.normalizedTime >= 0.99f) {
             fsm.ChangeState(StateType.Idle);
         }
     }
-    public override void OnFixedUpdate() {
+    public void OnFixedUpdate() {
 
     }
-    public override void OnExit() {
+    public void OnExit() {
 
     }
 }

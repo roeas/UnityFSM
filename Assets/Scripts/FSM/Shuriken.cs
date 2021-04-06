@@ -10,14 +10,17 @@ public class Shuriken : MonoBehaviour
     private Vector2 originalPosition;
     private Rigidbody2D body;
     private SpriteRenderer spriteRenderer;
+    private Collider2D attackArea;
     private float startTime;
     private float direction;
     private void OnEnable() {
         body = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        attackArea = GetComponent<Collider2D>();
         originalParent = transform.parent;
         originalPosition = transform.localPosition;
 
+        attackArea.enabled = false;
         startTime = Time.time;
         transform.parent = null;
         spriteRenderer.color = new Color(1, 1, 1, 0);
@@ -25,6 +28,7 @@ public class Shuriken : MonoBehaviour
     }
     void FixedUpdate() {
         if (Time.time - startTime >= (4f / 14f)) {//等待Throw动画的前摇结束，再显示并移动手里剑
+            attackArea.enabled = true;
             spriteRenderer.color = new Color(1, 1, 1, 1);
             body.velocity = new Vector2(direction * speed * Time.fixedDeltaTime, 0);
         }

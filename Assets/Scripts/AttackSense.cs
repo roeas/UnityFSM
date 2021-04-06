@@ -10,7 +10,7 @@ public class AttackSense : MonoBehaviour
     private void Awake() {
         instance = this;
     }
-    public void FrameFreeze(int pauseFrame) {
+    public void FrameFreeze(int pauseFrame) {//在PlayerControler中调用
         StartCoroutine(PauseOnAttack(pauseFrame));
     }
     IEnumerator PauseOnAttack(int pauseFrame) {
@@ -19,21 +19,22 @@ public class AttackSense : MonoBehaviour
         yield return new WaitForSecondsRealtime(pauseTime);
         Time.timeScale = 1;
     }
-    public void ShakeScreen(float strength, float duration) {
-        if (!isShake) {
-            StartCoroutine(ShakeCamera(strength, duration));
-        }
-    }
-    IEnumerator ShakeCamera(float strength, float duration) {
-        isShake = true;
-        Transform camera = Camera.main.transform;
-        Vector3 startPosition = camera.position;
-        while (duration > 0) {
-            camera.position = Random.insideUnitSphere * strength + startPosition;
-            duration -= Time.deltaTime;
-            yield return null;
-        }
-        camera.position = startPosition;
-        isShake = false;
-    }
+    //改用Cinemachine
+    //public void ShakeScreen(float strength, float duration) {
+    //    if (!isShake) {
+    //        StartCoroutine(ShakeCamera(strength, duration));
+    //    }
+    //}
+    //IEnumerator ShakeCamera(float strength, float duration) {
+    //    isShake = true;
+    //    Transform camera = Camera.main.transform;
+    //    Vector3 startPosition = camera.position;
+    //    while (duration > 0) {
+    //        camera.position = Random.insideUnitSphere * strength + startPosition;
+    //        duration -= Time.deltaTime;
+    //        yield return null;
+    //    }
+    //    camera.position = startPosition;
+    //    isShake = false;
+    //}
 }

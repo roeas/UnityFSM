@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour {
     private bool jumpPressed = false;
     private int runningID, isRunId, jumpId, jumpingID, isIdleID, lightAttackID, haveyAttackID, comboID, isAttackID, isCrouchID, dashID, isDashID, HurtID, isHurtID;
     private int parryStanceID, isParryStanceID, parryID, isParryID;
+    //动画器控制器中-ing为float型，is-为bool型，原型单词基本为Trigg型。
     //isAttack在animator中为bool型，作为防止攻击动画被其他动画打断的标记符。
     //isHurtID在animator中为bool型，作为防止受伤动画被其他动画打断的标记符。
 
@@ -120,7 +121,7 @@ public class PlayerController : MonoBehaviour {
         isHurt = false;
         isParryStance = false;
     }
-    public void ParryOver() {
+    public void ParryOver() {//在防御动画结束时调用
         isParry = false;
         isParryStance = false;
     }
@@ -134,6 +135,10 @@ public class PlayerController : MonoBehaviour {
         if (move != 0) {
             transform.localScale = new Vector3(move, 1, 1);//转身
         }
+        if (isSlam) {//下落攻击时向下冲刺
+            body.velocity = new Vector2(0, -slamSpeed);
+            return;
+        }
         if (isParry) {//防御成功被击退时的移动
             body.velocity = new Vector2(-transform.localScale.x * 8, body.velocity.y);
             return;
@@ -146,16 +151,11 @@ public class PlayerController : MonoBehaviour {
             body.velocity = new Vector2(move * speed * Time.fixedDeltaTime * 0.15f, body.velocity.y);
             return;
         }
-        if (!isAttack) {//普通状态下的移动
+        if (!isAttack) {//普通状态下的移动，攻击时的移动在Attack()中控制
             body.velocity = new Vector2(move * speed * Time.fixedDeltaTime, body.velocity.y);
         }
-        else {
-            if (isSlam) {//下落攻击时向下冲刺
-                body.velocity = new Vector2(0, -slamSpeed);
-            }
-            else {//所有不因当产生移动的情况，随时用Vector2.zero覆盖velocity以免发生预期外的移动
-                body.velocity = Vector2.zero;
-            }
+        else {//所有不因当产生移动的情况，随时用Vector2.zero覆盖velocity以免发生预期外的移动
+            body.velocity = Vector2.zero;
         }
         if (uponGround && body.velocity.y <= 0) {
             jumpCount = finalJumpCount;//落地时重置跳跃相关的参数，而且要避免刚起跳时OverlapCircle检测到地面
@@ -168,7 +168,7 @@ public class PlayerController : MonoBehaviour {
             jumpCount--;
         }
     }
-    private void Crouch() {
+    private void Crouch() {//下蹲
         if (Input.GetButtonDown("Crouch")) {
             isCrouch = true;
             animator.SetBool(isCrouchID, true);
@@ -182,7 +182,7 @@ public class PlayerController : MonoBehaviour {
             usualCollider.enabled = true;
         }
     }
-    private void Animation() {
+    private void Animation() {//给动画器控制器传参
         float flMove = Input.GetAxis("Horizontal");//-1f ~ 1f
         float ySpeed = body.velocity.y;
         if (Input.GetAxisRaw("Horizontal") != 0) {
@@ -211,7 +211,7 @@ public class PlayerController : MonoBehaviour {
                     //关闭协程确保这段时间内isAttack不会被设为false，启动协程倒计时使isAttack为false
                     body.velocity = Vector2.zero;
                     isAttack = true;
-                    timeCount = interval;
+                    timeCount = interval;//每次轻攻击时计时器重置为最大值
                     combo++;
                     if (combo > finalMaxCombo) {//combo为1时播放一段攻击动画，为2时播放二段攻击动画
                         combo = 1;
@@ -254,7 +254,7 @@ public class PlayerController : MonoBehaviour {
                 }
             }
         }//if (!animator.GetBool(isAttackID))
-        if (timeCount != 0) {
+        if (timeCount != 0) {//倒计时结束后重置combo数
             timeCount -= Time.deltaTime;
             if (timeCount <= 0) {
                 timeCount = 2f;
@@ -262,7 +262,7 @@ public class PlayerController : MonoBehaviour {
             }
         }
     }
-    private IEnumerator WaitForAttackOver(float time) {
+    private IEnumerator WaitForAttackOver(float time) {//在Attack()中被调用
         yield return new WaitForSeconds(time);
         isAttack = false;
         isSlam = false;

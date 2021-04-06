@@ -2,23 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class State
+public interface State
 {
-    protected FSM fsm;
-    protected AnimatorStateInfo animeInfo;
-    public State(FSM fsmIn) {
-        this.fsm = fsmIn;
-    }
-    public virtual void OnEnter() {
-
-    }
-    public virtual void OnUpdate() {
-
-    }
-    public virtual void OnFixedUpdate() {
-
-    }
-    public virtual void OnExit() {
-
-    }
+    public void OnEnter();
+    public void OnUpdate();
+    public void OnFixedUpdate();
+    public void OnExit();
 }

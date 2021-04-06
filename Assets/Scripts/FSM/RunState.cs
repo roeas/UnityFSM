@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class RunState : State
 {
-    public RunState(FSM fsmIn) : base(fsmIn) {
+    private FSM fsm;
+    private AnimatorStateInfo animeInfo;
 
+    public RunState(FSM fsmIn) {
+        this.fsm = fsmIn;
     }
-    public override void OnEnter() {
+    public void OnEnter() {
         fsm.animator.Play("Rogue_Run");
     }
-    public override void OnUpdate() {
+    public void OnUpdate() {
         if (fsm.playerLAArea.bounds.Intersects(fsm.rogueCollider.bounds) || fsm.playerHAArea.bounds.Intersects(fsm.rogueCollider.bounds)) {// ‹…À
             fsm.ChangeState(StateType.Hurt);
         }
@@ -18,10 +21,10 @@ public class RunState : State
             fsm.ChangeState(StateType.Attack);
         }
     }
-    public override void OnFixedUpdate() {
+    public void OnFixedUpdate() {
         fsm.body.velocity = new Vector2(fsm.rogue.Speed * fsm.transform.localScale.x * Time.fixedDeltaTime, fsm.body.velocity.y);
     }
-    public override void OnExit() {
+    public void OnExit() {
         fsm.idleStartTime = Time.time;
     }
 }

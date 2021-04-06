@@ -27,12 +27,12 @@ public class Afterimage : MonoBehaviour
     }
     void Update() {
         thisSR.color = new Color(0.5f, 0.5f, 1, alpha);
-        if (Time.time >= startTime + activeTime) {
+        if (Time.time - startTime >= activeTime) {
             AfterimagePool.instance.ReturnToPool(gameObject);
         }
     }
     private IEnumerator DecreaseAlpha() {
-        while (alpha > 0) {
+        while (alpha > 0) {//alpha需要在activeTime秒（activeTime * 50次FixedUpdate）从startAlpha减为0
             alpha -= (startAlpha / (activeTime * 50));
             yield return new WaitForFixedUpdate();
         }
