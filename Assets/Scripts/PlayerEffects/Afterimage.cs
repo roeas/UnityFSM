@@ -18,11 +18,12 @@ public class Afterimage : MonoBehaviour
         playerSR = player.GetComponent<SpriteRenderer>();
 
         alpha = startAlpha;
+        startTime = Time.time;
+
         thisSR.sprite = playerSR.sprite;
         transform.position = player.position;
         transform.localScale = player.localScale;
         transform.rotation = player.rotation;
-        startTime = Time.time;
         StartCoroutine(DecreaseAlpha());
     }
     void Update() {
@@ -32,7 +33,8 @@ public class Afterimage : MonoBehaviour
         }
     }
     private IEnumerator DecreaseAlpha() {
-        while (alpha > 0) {//alpha需要在activeTime秒（activeTime * 50次FixedUpdate）从startAlpha减为0
+        while (alpha > 0) {
+            //alpha需要在activeTime秒（activeTime * 50次FixedUpdate）内从startAlpha减为0
             alpha -= (startAlpha / (activeTime * 50));
             yield return new WaitForFixedUpdate();
         }

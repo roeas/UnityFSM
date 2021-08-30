@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum StateType {
-    Idle, Chase, Attack, Hurt, Throw, Run, SpecialAttack
+    Idle, Attack, Hurt, Throw, Run, SpecialAttack
 }
 public class FSM : MonoBehaviour
 {
@@ -22,8 +22,8 @@ public class FSM : MonoBehaviour
     [HideInInspector] public float idleStartTime;
     [HideInInspector] public float idleWaitTime;
 
-    private State currentState;
-    private Dictionary<StateType, State> stateLise = new Dictionary<StateType, State>();
+    private IState crtState;
+    private Dictionary<StateType, IState> stateLise = new Dictionary<StateType, IState>();
     void Awake() {
         player = GameObject.FindGameObjectWithTag("Player");
         playerLAArea = player.transform.Find("LightAttackArea").GetComponent<Collider2D>();
@@ -36,6 +36,7 @@ public class FSM : MonoBehaviour
         attackLenth = transform.Find("AttackLenth").GetComponent<Collider2D>();
         throwLenth = transform.Find("ThrowLenth").GetComponent<Collider2D>();
         idleWaitTime = 1f;
+
         //注册状态并将FSM自身传入状态
         stateLise.Add(StateType.Idle, new IdleState(this));
         stateLise.Add(StateType.Attack, new AttackState(this));
@@ -47,17 +48,17 @@ public class FSM : MonoBehaviour
     }
     private void Update() {
         FlipTo(player.transform);
-        currentState.OnUpdate();
+        crtState.OnUpdate();
     }
     private void FixedUpdate() {
-        currentState.OnFixedUpdate();
+        crtState.OnFixedUpdate();
     }
     public void ChangeState(StateType type) {
-        if (currentState != null) {
-            currentState.OnExit();
+        if (crtState != null) {
+            crtState.OnExit();
         }
-        currentState = stateLise[type];
-        currentState.OnEnter();
+        crtState = stateLise[type];
+        crtState.OnEnter();
     }
     //一些通用的方法
     public void FlipTo(Transform target) {

@@ -9,7 +9,9 @@ public class AfterimagePool : MonoBehaviour
 
     private Queue<GameObject> pool = new Queue<GameObject>();
     private void Awake() {
-        instance = this;
+        if(instance == null) {
+            instance = this;
+        }
         FillPoll(10);
     }
     public void FillPoll(int num) {
@@ -23,12 +25,11 @@ public class AfterimagePool : MonoBehaviour
         objectIn.SetActive(false);
         pool.Enqueue(objectIn);
     }
-    public GameObject TakeFromPool() {//Player为冲刺状态时在FixedUpdate中反复调用
+    public void TakeFromPool() {//Player为冲刺状态时在FixedUpdate中反复调用
         if (pool.Count <= 0) {//对象池不够用时多生成几个预制件
             FillPoll(5);
         }
-        GameObject activeimage = pool.Dequeue();
-        activeimage.SetActive(true);
-        return activeimage;
+        GameObject crtImage = pool.Dequeue();
+        crtImage.SetActive(true);
     }
 }

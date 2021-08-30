@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RunState : State
+public class RunState : IState
 {
     private FSM fsm;
     private AnimatorStateInfo animeInfo;

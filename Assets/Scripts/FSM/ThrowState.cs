@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ThrowState : State {
+public class ThrowState : IState {
     private FSM fsm;
     private AnimatorStateInfo animeInfo;
 

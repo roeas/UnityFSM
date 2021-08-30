@@ -22,13 +22,14 @@ public class PlayerController : MonoBehaviour {
     private int runningID, isRunId, jumpId, jumpingID, isIdleID, lightAttackID, haveyAttackID, comboID, isAttackID, isCrouchID, dashID, isDashID, HurtID, isHurtID;
     private int parryStanceID, isParryStanceID, parryID, isParryID;
     //动画器控制器中-ing为float型，is-为bool型，原型单词基本为Trigg型。
-    //isAttack在animator中为bool型，作为防止攻击动画被其他动画打断的标记符。
-    //isHurtID在animator中为bool型，作为防止受伤动画被其他动画打断的标记符。
+    //isAttack在animator中作为防止攻击动画被其他动画打断的标记符。
+    //isHurtID在animator中作为防止受伤动画被其他动画打断的标记符。
 
     private int finalMaxCombo = 2, combo = 0;
-    private float timeCount, interval = 2f;
+    private float timer, interval = 2f;
     private bool uponGround, isAttack = false, isSlam = false, isCrouch = false, isDash = false, canDash = true, isHurt = false, isParryStance = false, isParry = false;
-    //isAttack用于限制普通攻击时的移动输入，为了保证手感与动画的流畅，它晚于animator中的isAttack重置。isSlamAttack用于限制下落攻击后摇时的跳跃。
+    //isSlamAttack用于限制下落攻击后摇时的跳跃。
+    //isAttack用于限制普通攻击时的移动输入，为了保证手感与动画的流畅，它晚于animator中的isAttack重置。
     //当isDash用于触发冲刺状态，为真时会屏蔽所有移动相关的输入，canDash用于限制Dashing的触发频率，晚于isDash重置。
     private string attackName;
     void Awake() {
@@ -74,10 +75,6 @@ public class PlayerController : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.LeftShift)) {
             if (!isDash && canDash && !isSlam && !isHurt && !isParry) {
-                isDash = true;
-                isParryStance = false;
-                animator.SetTrigger(dashID);
-                canDash = false;
                 StartCoroutine(Dash(dashTime));
             }
         }
@@ -90,6 +87,10 @@ public class PlayerController : MonoBehaviour {
         }
     }
     private IEnumerator Dash(float dashTime) {
+        isDash = true;
+        canDash = false;
+        isParryStance = false;
+        animator.SetTrigger(dashID);
         yield return new WaitForSeconds(dashTime);
         isDash = false;
         yield return new WaitForSeconds(0.4f);
@@ -127,13 +128,14 @@ public class PlayerController : MonoBehaviour {
     }
     private void Movement() {
         float move = Input.GetAxisRaw("Horizontal");//-1, 0, 1
+        if (move != 0) {//转身
+            transform.localScale = new Vector3(move, 1, 1);
+        }
+
         if (isDash) {//冲刺移动，最高优先级
             body.velocity = new Vector2(dashSpeed * transform.localScale.x, body.velocity.y);
             AfterimagePool.instance.TakeFromPool();
             return;
-        }
-        if (move != 0) {
-            transform.localScale = new Vector3(move, 1, 1);//转身
         }
         if (isSlam) {//下落攻击时向下冲刺
             body.velocity = new Vector2(0, -slamSpeed);
@@ -151,14 +153,16 @@ public class PlayerController : MonoBehaviour {
             body.velocity = new Vector2(move * speed * Time.fixedDeltaTime * 0.15f, body.velocity.y);
             return;
         }
+
         if (!isAttack) {//普通状态下的移动，攻击时的移动在Attack()中控制
             body.velocity = new Vector2(move * speed * Time.fixedDeltaTime, body.velocity.y);
         }
         else {//所有不因当产生移动的情况，随时用Vector2.zero覆盖velocity以免发生预期外的移动
             body.velocity = Vector2.zero;
         }
+
         if (uponGround && body.velocity.y <= 0) {
-            jumpCount = finalJumpCount;//落地时重置跳跃相关的参数，而且要避免刚起跳时OverlapCircle检测到地面
+            jumpCount = finalJumpCount;//落地时重置跳跃相关的参数
         }
         if (jumpPressed && jumpCount > 0) {//落地攻击后摇时jumpPressed不会为true
             jumpPressed = false;
@@ -201,21 +205,23 @@ public class PlayerController : MonoBehaviour {
     }
     private Coroutine tmpCoroutine = null;//仅在Attack中使用
     private void Attack() {
-        if (!animator.GetBool(isAttackID) && !isHurt && !isDash && !isParryStance) {
-            if (uponGround) {
+        if (!animator.GetBool(isAttackID) && !isHurt && !isDash && !isParryStance) {//可攻击的状态
+            if (uponGround) {//地面攻击
                 if (Input.GetMouseButton(0)) {//左键轻攻击
                     if (tmpCoroutine != null) {
                         StopCoroutine(tmpCoroutine);
                     }
                     tmpCoroutine = StartCoroutine(WaitForAttackOver(4f / 14f));
                     //关闭协程确保这段时间内isAttack不会被设为false，启动协程倒计时使isAttack为false
+
                     body.velocity = Vector2.zero;
                     isAttack = true;
-                    timeCount = interval;//每次轻攻击时计时器重置为最大值
+                    timer = interval;//每次轻攻击时计时器重置为最大值
                     combo++;
                     if (combo > finalMaxCombo) {//combo为1时播放一段攻击动画，为2时播放二段攻击动画
                         combo = 1;
                     }
+
                     animator.SetBool(isAttackID, true);
                     animator.SetTrigger(lightAttackID);
                     body.MovePosition(frontPoint.position);
@@ -227,6 +233,7 @@ public class PlayerController : MonoBehaviour {
                         StopCoroutine(tmpCoroutine);
                     }
                     tmpCoroutine = StartCoroutine(WaitForAttackOver(6f / 14f));
+
                     body.velocity = Vector2.zero;
                     isAttack = true;
                     animator.SetBool(isAttackID, true);
@@ -234,7 +241,7 @@ public class PlayerController : MonoBehaviour {
                     attackName = "Heavy";
                 }
             }
-            else {//在空中
+            else {//空中攻击
                 if (Input.GetMouseButton(0)) {//空中攻击
                     animator.SetBool(isAttackID, true);
                     animator.SetTrigger(lightAttackID);
@@ -245,19 +252,19 @@ public class PlayerController : MonoBehaviour {
                         StopCoroutine(tmpCoroutine);
                     }
                     tmpCoroutine = StartCoroutine(WaitForAttackOver(6f / 14f));
+
                     body.velocity = Vector2.zero;
                     isAttack = true;
                     isSlam = true;
                     animator.SetBool(isAttackID, true);
                     animator.SetTrigger(haveyAttackID);
-                    attackName = "";
+                    attackName = "Slam";
                 }
             }
-        }//if (!animator.GetBool(isAttackID))
-        if (timeCount != 0) {//倒计时结束后重置combo数
-            timeCount -= Time.deltaTime;
-            if (timeCount <= 0) {
-                timeCount = 2f;
+        }
+        if (timer >= 0) {//倒计时结束后重置combo数
+            timer -= Time.deltaTime;
+            if (timer <= 0) {
                 combo = 0;
             }
         }
@@ -266,7 +273,8 @@ public class PlayerController : MonoBehaviour {
         yield return new WaitForSeconds(time);
         isAttack = false;
         isSlam = false;
-        animator.SetBool(isAttackID, false);//确保即使攻击动画被打断，animator中的isAttack也会正确地被重置
+        animator.SetBool(isAttackID, false);
+        //确保即使攻击动画被打断，animator中的isAttack也会正确地被重置
     }
     public void AttackOver() {//在每个攻击动画快结束时调用
         animator.SetBool(isAttackID, false);

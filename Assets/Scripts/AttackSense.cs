@@ -19,22 +19,5 @@ public class AttackSense : MonoBehaviour
         yield return new WaitForSecondsRealtime(pauseTime);
         Time.timeScale = 1;
     }
-    //改用Cinemachine
-    //public void ShakeScreen(float strength, float duration) {
-    //    if (!isShake) {
-    //        StartCoroutine(ShakeCamera(strength, duration));
-    //    }
-    //}
-    //IEnumerator ShakeCamera(float strength, float duration) {
-    //    isShake = true;
-    //    Transform camera = Camera.main.transform;
-    //    Vector3 startPosition = camera.position;
-    //    while (duration > 0) {
-    //        camera.position = Random.insideUnitSphere * strength + startPosition;
-    //        duration -= Time.deltaTime;
-    //        yield return null;
-    //    }
-    //    camera.position = startPosition;
-    //    isShake = false;
-    //}
+    //屏幕抖动的功能由Cinemachine实现
 }

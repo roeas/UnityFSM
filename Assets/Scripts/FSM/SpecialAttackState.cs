@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpecialAttackState : State
+public class SpecialAttackState : IState
 {
     private FSM fsm;
     private AnimatorStateInfo animeInfo;
